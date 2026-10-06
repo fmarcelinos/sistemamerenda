@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compilação do Manual de Boas Práticas</title>
+    <title>Sistema de links Merenda</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Biblioteca oficial do Supabase -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
@@ -33,7 +33,7 @@
     <!-- TELA DE AUTENTICAÇÃO -->
     <div id="tela-auth" class="flex-1 flex flex-col h-full items-center justify-center bg-slate-800 p-4">
         <div class="mb-8 text-center">
-            <h1 class="text-3xl font-bold text-white mb-2">Boas Práticas</h1>
+            <h1 class="text-3xl font-bold text-white mb-2">Sistema de links Merenda</h1>
             <p class="text-slate-400">Sistema de Gestão Educacional</p>
         </div>
 
@@ -75,7 +75,7 @@
 
         <div class="max-w-4xl mx-auto w-full p-6 md:p-12 flex-1 flex flex-col">
             <div class="text-center mb-10">
-                <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Manual de Boas Práticas</h1>
+                <h1 class="text-4xl md:text-5xl font-bold text-slate-800 mb-4">Sistema de links Merenda</h1>
                 <p class="text-lg text-slate-500">Sistema integrado na nuvem</p>
             </div>
 
@@ -93,7 +93,7 @@
         <!-- Barra Lateral -->
         <aside class="w-full md:w-64 bg-slate-800 text-white flex flex-col shadow-lg z-20 shrink-0 h-auto md:h-full">
             <div class="p-3 md:p-4 bg-slate-900 flex justify-between items-center">
-                <h1 class="text-base md:text-lg font-bold leading-tight hidden md:block">Boas Práticas</h1>
+                <h1 class="text-base md:text-lg font-bold leading-tight hidden md:block">Sistema de links Merenda</h1>
                 <button onclick="voltarInicio()" class="text-xs bg-slate-700 px-2 py-1 rounded hover:bg-slate-600 md:hidden">Voltar</button>
             </div>
             
@@ -108,7 +108,7 @@
             
             <div class="p-3 bg-slate-900 text-center text-xs text-slate-400 border-t border-slate-700 hidden md:block flex justify-between items-center">
                 <span class="truncate pr-2" id="sidebar-username">User</span>
-                <button onclick="fazerLogout()" class="text-red-400 hover:text-red-300 ml-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg></button>
+                <button onclick="fazerLogout()" class="text-red-400 hover:text-red-300 ml-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1"></path></svg></button>
             </div>
         </aside>
 
@@ -379,7 +379,7 @@
                                 </select>
                             </td>`;
                     item.pops.forEach((status, popIndex) => {
-                        let color = status === "CONFORME" ? "bg-green-400 text-green-900" : status === "NÃO CONFORME" ? "bg-red-500 text-white" : status === "PARCIALMENTE" ? "bg-yellow-300 text-yellow-900" : "bg-gray-100";
+                        let color = status === "CONFORME" ? "bg-green-400 text-green-900" : status === "NÃO CONFORME" ? "bg-red-500 text-white" : status === "PARCIALMENTE" ? "bg-yellow-300 text-yellow-900" : "bg-gray-200 text-gray-700";
                         row += `<td class="px-1 py-2 border-b border-l text-[10px] text-center font-bold cursor-pointer select-none ${color}" onclick="cyclePop(${index}, ${popIndex})">${status}</td>`;
                     });
                     row += `</tr>`;
