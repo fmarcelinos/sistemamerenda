@@ -122,9 +122,9 @@
                 
                 <div class="flex gap-2 items-center">
                     <div class="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden">
-                        <button type="button" onclick="alterarQuantidadePop(-1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Diminuir POP">−</button>
-                        <span id="pop-count-label" class="px-2 py-1 text-[11px] font-semibold text-gray-700 min-w-[52px] text-center">POP 04</span>
-                        <button type="button" onclick="alterarQuantidadePop(1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Aumentar POP">+</button>
+                        <button type="button" onclick="alterarQuantidadePop(-1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Diminuir Pergunta">−</button>
+                        <span id="pop-count-label" class="px-2 py-1 text-[11px] font-semibold text-gray-700 min-w-[72px] text-center">Pergunta 04</span>
+                        <button type="button" onclick="alterarQuantidadePop(1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Aumentar Pergunta">+</button>
                     </div>
                     <span id="status-sync" class="hidden text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full items-center">✓ Salvo na nuvem</span>
                     <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 md:px-4 md:py-2 rounded shadow-sm text-sm font-medium">+ Adicionar Unidade</button>
@@ -214,7 +214,7 @@
 
         function buildPopColumns(total) {
             return Array.from({ length: Math.min(MAX_POP_COLUMNS, Math.max(DEFAULT_POP_COLUMNS, total)) }, (_, index) => 
-                `POP ${String(index + 1).padStart(2, '0')}`
+                `Pergunta ${String(index + 1).padStart(2, '0')}`
             );
         }
 
@@ -232,7 +232,7 @@
         function atualizarLabelPop() {
             const label = document.getElementById('pop-count-label');
             if (label) {
-                label.innerText = `POP ${String(popColumnsCount).padStart(2, '0')}`;
+                label.innerText = `Pergunta ${String(popColumnsCount).padStart(2, '0')}`;
             }
         }
 
