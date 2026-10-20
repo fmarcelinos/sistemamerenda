@@ -108,7 +108,7 @@
             
             <div class="p-3 bg-slate-900 text-center text-xs text-slate-400 border-t border-slate-700 hidden md:block flex justify-between items-center">
                 <span class="truncate pr-2" id="sidebar-username">User</span>
-                <button onclick="fazerLogout()" class="text-red-400 hover:text-red-300 ml-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H7a3 3 0 01-3-3V7a3 3 0 013-3h3a3 3 0 013 3v1"></path></svg></button>
+                <button onclick="fazerLogout()" class="text-red-400 hover:text-red-300 ml-auto"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H5a3 3 0 01-3-3V7a3 3 0 013-3h5a3 3 0 013 3v1"/></svg></button>
             </div>
         </aside>
 
@@ -116,11 +116,16 @@
         <main class="flex-1 flex flex-col h-full overflow-hidden relative">
             <header class="bg-white shadow px-4 py-3 flex justify-between items-center z-10 gap-3">
                 <div class="flex items-center gap-3">
-                    <button onclick="voltarInicio()" class="hidden md:block text-slate-500 hover:text-slate-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg></button>
+                    <button onclick="voltarInicio()" class="hidden md:block text-slate-500 hover:text-slate-800"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg></button>
                     <h2 class="text-xl font-bold text-gray-800 truncate" id="current-apoio-title">Selecione um Apoio</h2>
                 </div>
                 
-                <div class="flex gap-2">
+                <div class="flex gap-2 items-center">
+                    <div class="flex items-center bg-gray-100 border border-gray-300 rounded-md overflow-hidden">
+                        <button type="button" onclick="alterarQuantidadePop(-1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Diminuir POP">−</button>
+                        <span id="pop-count-label" class="px-2 py-1 text-[11px] font-semibold text-gray-700 min-w-[52px] text-center">POP 04</span>
+                        <button type="button" onclick="alterarQuantidadePop(1)" class="px-2 py-1 text-gray-700 hover:bg-gray-200 font-bold" aria-label="Aumentar POP">+</button>
+                    </div>
                     <span id="status-sync" class="hidden text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full items-center">✓ Salvo na nuvem</span>
                     <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 md:px-4 md:py-2 rounded shadow-sm text-sm font-medium">+ Adicionar Unidade</button>
                 </div>
@@ -202,10 +207,37 @@
         let apoios = ["Adriana", "Betânia", "Camila"]; // Lista padrão
         let database = {}; // Organizado como: { "Adriana": [ {id, unidade...}, ... ] }
         let currentApoio = "Adriana";
-        
-        // Mantém as 30 colunas de POP
+        const DEFAULT_POP_COLUMNS = 4;
+        const MAX_POP_COLUMNS = 30;
+        let popColumnsCount = DEFAULT_POP_COLUMNS;
         let popColumns = [];
-        for(let i = 1; i <= 30; i++) popColumns.push(`POP ${i.toString().padStart(2, '0')}`);
+
+        function buildPopColumns(total) {
+            return Array.from({ length: Math.min(MAX_POP_COLUMNS, Math.max(DEFAULT_POP_COLUMNS, total)) }, (_, index) => 
+                `POP ${String(index + 1).padStart(2, '0')}`
+            );
+        }
+
+        function normalizePops(pops = [], desiredLength = popColumnsCount) {
+            const safeDesiredLength = Math.min(MAX_POP_COLUMNS, Math.max(DEFAULT_POP_COLUMNS, desiredLength));
+            const lista = Array.isArray(pops) ? [...pops] : [];
+
+            while (lista.length < safeDesiredLength) {
+                lista.push('CONFORME');
+            }
+
+            return lista.slice(0, safeDesiredLength);
+        }
+
+        function atualizarLabelPop() {
+            const label = document.getElementById('pop-count-label');
+            if (label) {
+                label.innerText = `POP ${String(popColumnsCount).padStart(2, '0')}`;
+            }
+        }
+
+        popColumns = buildPopColumns(popColumnsCount);
+        atualizarLabelPop();
 
         const unidadesAdriana = [
             "CEI SUELY PASCHOAL", "CMEI BRINCANDO E APREDENDO", "CMEI CECÍLIA MEIRELES",
@@ -282,6 +314,15 @@
                 return;
             }
 
+            const maiorQuantidadePop = data.reduce((maior, linha) => {
+                const tamanhoArray = Array.isArray(linha.pops) ? linha.pops.length : 0;
+                return Math.max(maior, tamanhoArray);
+            }, DEFAULT_POP_COLUMNS);
+
+            popColumnsCount = Math.min(Math.max(DEFAULT_POP_COLUMNS, maiorQuantidadePop), MAX_POP_COLUMNS);
+            popColumns = buildPopColumns(popColumnsCount);
+            atualizarLabelPop();
+
             // Reseta a base local
             apoios.forEach(nome => database[nome] = []);
             
@@ -289,6 +330,7 @@
             data.forEach(linha => {
                 if(!apoios.includes(linha.apoio)) apoios.push(linha.apoio);
                 if(!database[linha.apoio]) database[linha.apoio] = [];
+                linha.pops = normalizePops(linha.pops, popColumnsCount);
                 database[linha.apoio].push(linha);
             });
 
@@ -321,12 +363,33 @@
         function cyclePop(unitIndex, popIndex) {
             const record = database[currentApoio][unitIndex];
             const states = ["CONFORME", "NÃO CONFORME", "PARCIALMENTE"];
-            const currentState = record.pops[popIndex];
-            let nextIndex = (states.indexOf(currentState) + 1) % states.length;
+            const currentState = record.pops[popIndex] || "CONFORME";
+            const nextIndex = (states.indexOf(currentState) + 1) % states.length;
             
             record.pops[popIndex] = states[nextIndex]; // Atualiza na memória
             selectApoio(currentApoio); // Recarrega as cores
             updateDataInSupabase(record.id, 'pops', record.pops); // Sincroniza no banco
+        }
+
+        async function alterarQuantidadePop(delta) {
+            const proximoValor = Math.min(MAX_POP_COLUMNS, Math.max(DEFAULT_POP_COLUMNS, popColumnsCount + delta));
+
+            if (proximoValor === popColumnsCount) return;
+
+            popColumnsCount = proximoValor;
+            popColumns = buildPopColumns(popColumnsCount);
+            atualizarLabelPop();
+
+            const todosRegistros = Object.values(database).flat();
+            for (const item of todosRegistros) {
+                item.pops = normalizePops(item.pops, popColumnsCount);
+                if (item.id) {
+                    await updateDataInSupabase(item.id, 'pops', item.pops);
+                }
+            }
+
+            renderTableHeaders();
+            if (database[currentApoio]) selectApoio(currentApoio);
         }
 
         // Renderização HTML da Tabela
@@ -366,6 +429,7 @@
             } else {
                 emptyState.classList.add('hidden');
                 tbody.innerHTML = dados.map((item, index) => {
+                    item.pops = normalizePops(item.pops, popColumnsCount);
                     let row = `
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-4 py-2 border-b font-medium text-gray-900 sticky left-0 z-10 bg-white shadow-sm">${item.unidade}</td>
@@ -433,7 +497,7 @@
                 resposta: resposta,
                 data: data,
                 turno: turno,
-                pops: Array(30).fill("CONFORME")
+                pops: Array(popColumnsCount).fill("CONFORME")
             };
 
             // Inserir no Supabase
