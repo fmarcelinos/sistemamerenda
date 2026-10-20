@@ -181,7 +181,7 @@
             </div>
             <div class="px-4 py-3 md:px-6 border-t bg-gray-50 flex justify-end gap-3 rounded-b-lg">
                 <button onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded text-sm bg-white hover:bg-gray-50">Cancelar</button>
-                <button onclick="saveUnidade()" id="btn-save-modal" class="px-4 py-2 border border-transparent rounded text-sm text-white bg-blue-600 hover:bg-blue-700">Adicionar ao Banco</button>
+                <button onclick="saveUnidade()" id="btn-save-modal" class="px-4 py-2 border border-transparent rounded text-sm text-white bg-blue-600 hover:bg-blue-700">Adicionar</button>
             </div>
         </div>
     </div>
@@ -425,7 +425,7 @@
             const data = document.getElementById('form-data').value;
             const turno = document.getElementById('form-turno').value;
             
-            if(!unidade) { alert("Preencha a Unidade."); btn.innerText = "Adicionar ao Banco"; btn.disabled = false; return; }
+            if(!unidade) { alert("Preencha a Unidade."); btn.innerText = "Adicionar"; btn.disabled = false; return; }
 
             const newRecord = {
                 apoio: currentApoio,
@@ -439,7 +439,7 @@
             // Inserir no Supabase
             const { data: insertedData, error } = await supabaseClient.from('registros').insert([newRecord]).select();
             
-            btn.innerText = "Adicionar ao Banco";
+            btn.innerText = "Adicionar";
             btn.disabled = false;
 
             if (error) {
